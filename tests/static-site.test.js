@@ -84,6 +84,7 @@ const appsScript = read("google-apps-script.js");
   "validateForm",
   "submitInquiry",
   "GOOGLE_SCRIPT_URL",
+  "https://script.google.com/macros/s/AKfycbz9JGXYGwrDCXr96WssJeCz4eK3mXPiXImWEld-bCjEjA20-EM5f_t3VZQcyY1VGTFu/exec",
   "showFieldError",
   "formStatus",
   "scrollIntoView",
