@@ -8,10 +8,15 @@ const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 assert.ok(fs.existsSync(path.join(root, "index.html")), "index.html exists");
 assert.ok(fs.existsSync(path.join(root, "styles.css")), "styles.css exists");
 assert.ok(fs.existsSync(path.join(root, "script.js")), "script.js exists");
+assert.ok(
+  fs.existsSync(path.join(root, "google-apps-script.js")),
+  "google-apps-script.js exists",
+);
 
 const html = read("index.html");
 const css = read("styles.css");
 const js = read("script.js");
+const appsScript = read("google-apps-script.js");
 
 [
   "hero",
@@ -77,11 +82,22 @@ const js = read("script.js");
 
 [
   "validateForm",
+  "submitInquiry",
+  "GOOGLE_SCRIPT_URL",
   "showFieldError",
   "formStatus",
   "scrollIntoView",
 ].forEach((hook) => {
   assert.ok(js.includes(hook), `JS contains ${hook}`);
+});
+
+[
+  "SPREADSHEET_ID",
+  "1ex-n0Q8lpdvSpP0EMfL_ONhhPl6WpehnSPyo8rfvvm8",
+  "doPost",
+  "appendRow",
+].forEach((hook) => {
+  assert.ok(appsScript.includes(hook), `Apps Script contains ${hook}`);
 });
 
 console.log("Static site checks passed");
