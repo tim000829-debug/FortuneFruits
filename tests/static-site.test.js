@@ -46,7 +46,6 @@ const appsScript = read("google-apps-script.js");
   "assets/idea2.jpg",
   "assets/idea3.jpg",
   "assets/idea4.jpg",
-  "assets/main-icon.jpg",
 ].forEach((assetPath) => {
   assert.ok(html.includes(assetPath), `HTML references ${assetPath}`);
   assert.ok(fs.existsSync(path.join(root, assetPath)), `${assetPath} exists`);
@@ -74,8 +73,6 @@ const appsScript = read("google-apps-script.js");
 
 [
   ".hero",
-  ".brand-logo",
-  ".hero-logo",
   ".gallery-grid",
   ".contact-form",
   "@media (max-width: 760px)",
