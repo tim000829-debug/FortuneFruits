@@ -28,16 +28,27 @@ function doPost(e) {
       payload.source || "",
     ]);
 
-    return jsonResponse({ ok: true });
+    return jsonResponse({
+      ok: true,
+      spreadsheetId: SPREADSHEET_ID,
+      spreadsheetUrl: SpreadsheetApp.openById(SPREADSHEET_ID).getUrl(),
+      sheetName: sheet.getName(),
+      lastRow: sheet.getLastRow(),
+    });
   } catch (error) {
     return jsonResponse({ ok: false, error: error.message });
   }
 }
 
 function doGet() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+
   return jsonResponse({
     ok: true,
     message: "Fortune Fruits inquiry endpoint is ready.",
+    spreadsheetId: SPREADSHEET_ID,
+    spreadsheetUrl: spreadsheet.getUrl(),
+    sheetName: SHEET_NAME,
   });
 }
 
