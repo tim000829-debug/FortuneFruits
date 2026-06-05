@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="果緣果物 Fortune Fruits 精選果切商品，可加入購物車後送出訂購需求。"
+    />
+    <title>商品 | 果緣果物 Fortune Fruits</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="commerce.js" defer></script>
+  </head>
+  <body class="shop-page" data-page="products">
+    <header class="site-header" aria-label="網站導覽">
+      <a class="brand-mark" href="index.html" aria-label="回首頁">
+        <span>果緣果物</span>
+        <small>Fortune Fruits</small>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">首頁</a>
+        <a href="products.html" aria-current="page">商品</a>
+        <a href="checkout.html">購物車<span class="cart-count" data-cart-count>0</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="shop-hero">
+        <p class="eyebrow">Products</p>
+        <h1>果切商品</h1>
+        <p>
+          為會議、贈禮與派對準備的精緻水果組合。選擇數量加入購物車後，前往結帳留下訂購資料。
+        </p>
+      </section>
+
+      <section class="section product-section" aria-labelledby="products-title">
+        <div class="section-heading">
+          <h2 id="products-title">精選組合</h2>
+          <p>固定品項適合快速下單；客製需求仍可回首頁填寫詢問表單。</p>
+        </div>
+
+        <div class="product-grid">
+          <article class="product-card" data-product-id="small-meeting-fruit">
+            <img src="assets/idea1.jpg" alt="小型會議果切盤" />
+            <div class="product-card-body">
+              <p class="product-tag">Meeting</p>
+              <h3>小型會議果切</h3>
+              <p>適合小型會議與辦公室點心，清爽好分食。</p>
+              <strong class="product-price">NT$ 880</strong>
+              <label>
+                數量
+                <input class="quantity-input" type="number" min="1" value="1" data-quantity />
+              </label>
+              <button type="button" data-add-to-cart>加入購物車</button>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="business-gift-box">
+            <img src="assets/idea2.jpg" alt="商務贈禮水果禮盒" />
+            <div class="product-card-body">
+              <p class="product-tag">Gift</p>
+              <h3>商務贈禮盒</h3>
+              <p>適合客戶拜訪、主管招待與精緻送禮。</p>
+              <strong class="product-price">NT$ 1,680</strong>
+              <label>
+                數量
+                <input class="quantity-input" type="number" min="1" value="1" data-quantity />
+              </label>
+              <button type="button" data-add-to-cart>加入購物車</button>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="party-platter">
+            <img src="assets/idea3.jpg" alt="派對活動水果拼盤" />
+            <div class="product-card-body">
+              <p class="product-tag">Event</p>
+              <h3>派對水果拼盤</h3>
+              <p>適合活動、聚會與多人分享，份量更充足。</p>
+              <strong class="product-price">NT$ 2,880</strong>
+              <label>
+                數量
+                <input class="quantity-input" type="number" min="1" value="1" data-quantity />
+              </label>
+              <button type="button" data-add-to-cart>加入購物車</button>
+            </div>
+          </article>
+        </div>
+
+        <p class="shop-status" data-shop-status role="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>果緣果物 Fortune Fruits</p>
+      <p><a href="checkout.html">前往購物車結帳</a></p>
+    </footer>
+  </body>
+</html>
