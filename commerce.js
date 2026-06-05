@@ -12,13 +12,13 @@ const PRODUCTS = [
   },
   {
     id: "business-gift-box",
-    name: "商務贈禮盒",
+    name: "商務招待禮盒",
     price: 1680,
     image: "assets/idea2.jpg",
   },
   {
     id: "party-platter",
-    name: "派對水果拼盤",
+    name: "活動派對拼盤",
     price: 2880,
     image: "assets/idea3.jpg",
   },
