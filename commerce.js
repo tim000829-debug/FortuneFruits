@@ -29,27 +29,52 @@ const commerceMessages = {
   required: "請填寫此欄位。",
   phoneTooShort: "電話至少需要 6 個字元。",
   emptyCart: "購物車目前是空的，請先回商品頁選購。",
-  sending: "訂單送出中，請稍候。",
+  sending: "訂單請求送出中，請稍候。",
   invalid: "請確認必填資料後再送出。",
-  success: "訂單已送出，請透過 LINE 或 Instagram 確認付款與交付細節。",
-  failed: "訂單送出失敗，請稍後再試，或透過 LINE / Instagram 聯繫我們。",
+  success: "訂單請求已送出，請透過 LINE 或 Instagram 確認付款與交付細節；尚未代表付款或訂單已完成。",
+  failed: "訂單請求送出失敗，請稍後再試，或透過 LINE / Instagram 聯繫我們。",
 };
 
 function formatCurrency(amount) {
   return `NT$ ${Number(amount).toLocaleString("zh-TW")}`;
 }
 
+function parsePositiveInteger(value) {
+  const quantity = Number(value);
+  return Number.isInteger(quantity) && quantity > 0 ? quantity : null;
+}
+
+function normalizeCartItem(item) {
+  if (!item || typeof item !== "object") return null;
+
+  const product = findProduct(item.id);
+  const quantity = parsePositiveInteger(item.quantity);
+  if (!product || quantity === null) return null;
+
+  return {
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    quantity,
+  };
+}
+
+function normalizeCart(cart) {
+  if (!Array.isArray(cart)) return [];
+  return cart.map(normalizeCartItem).filter(Boolean);
+}
+
 function getCart() {
   try {
     const parsed = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
-    return Array.isArray(parsed) ? parsed : [];
+    return normalizeCart(parsed);
   } catch (error) {
     return [];
   }
 }
 
 function saveCart(cart) {
-  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(normalizeCart(cart)));
   renderCartCount();
 }
 
@@ -69,7 +94,7 @@ function addToCart(productId, quantity) {
   const product = findProduct(productId);
   if (!product) return;
 
-  const safeQuantity = Math.max(1, Number(quantity) || 1);
+  const safeQuantity = parsePositiveInteger(quantity) || 1;
   const cart = getCart();
   const existing = cart.find((item) => item.id === product.id);
 
@@ -88,7 +113,7 @@ function addToCart(productId, quantity) {
 }
 
 function updateCartItem(productId, quantity) {
-  const safeQuantity = Math.max(1, Number(quantity) || 1);
+  const safeQuantity = parsePositiveInteger(quantity) || 1;
   const cart = getCart().map((item) =>
     item.id === productId ? { ...item, quantity: safeQuantity } : item,
   );
@@ -136,18 +161,36 @@ function createCartLine(item) {
   const line = document.createElement("article");
   line.className = "cart-line";
   line.dataset.productId = item.id;
-  line.innerHTML = `
-    <div>
-      <h3>${item.name}</h3>
-      <p>${formatCurrency(item.price)} / 份</p>
-    </div>
-    <label>
-      數量
-      <input type="number" min="1" value="${item.quantity}" data-cart-quantity />
-    </label>
-    <strong>${formatCurrency(item.price * item.quantity)}</strong>
-    <button type="button" data-remove-item>移除</button>
-  `;
+
+  const details = document.createElement("div");
+  const title = document.createElement("h3");
+  title.textContent = item.name;
+  const price = document.createElement("p");
+  price.textContent = `${formatCurrency(item.price)} / 份`;
+  details.append(title);
+  details.append(price);
+
+  const quantityLabel = document.createElement("label");
+  quantityLabel.textContent = "數量";
+  const quantityInput = document.createElement("input");
+  quantityInput.type = "number";
+  quantityInput.min = "1";
+  quantityInput.value = String(item.quantity);
+  quantityInput.dataset.cartQuantity = "";
+  quantityLabel.append(quantityInput);
+
+  const subtotal = document.createElement("strong");
+  subtotal.textContent = formatCurrency(item.price * item.quantity);
+
+  const removeButton = document.createElement("button");
+  removeButton.type = "button";
+  removeButton.dataset.removeItem = "";
+  removeButton.textContent = "移除";
+
+  line.append(details);
+  line.append(quantityLabel);
+  line.append(subtotal);
+  line.append(removeButton);
 
   line.querySelector("[data-cart-quantity]").addEventListener("change", (event) => {
     updateCartItem(item.id, event.target.value);
@@ -258,18 +301,43 @@ function renderOrderSummary(payload) {
   const target = document.querySelector("[data-order-summary]");
   if (!target) return;
 
-  const itemRows = payload.items
-    .map((item) => `<li>${item.name} x ${item.quantity} = ${formatCurrency(item.price * item.quantity)}</li>`)
-    .join("");
-
   target.hidden = false;
-  target.innerHTML = `
-    <h2>訂單摘要</h2>
-    <p>訂單編號：${payload.orderId}</p>
-    <ul>${itemRows}</ul>
-    <strong>總計：${formatCurrency(payload.total)}</strong>
-    <p>請透過 <a href="https://line.me/R/ti/p/@fortune-fruits">LINE</a> 或 <a href="https://www.instagram.com/fortune.fruits.tw">Instagram</a> 確認付款與交付細節。</p>
-  `;
+  target.innerHTML = "";
+
+  const heading = document.createElement("h2");
+  heading.textContent = "訂單摘要";
+
+  const orderId = document.createElement("p");
+  orderId.textContent = `訂單編號：${payload.orderId}`;
+
+  const list = document.createElement("ul");
+  payload.items.forEach((item) => {
+    const row = document.createElement("li");
+    row.textContent = `${item.name} x ${item.quantity} = ${formatCurrency(item.price * item.quantity)}`;
+    list.append(row);
+  });
+
+  const total = document.createElement("strong");
+  total.textContent = `總計：${formatCurrency(payload.total)}`;
+
+  const confirmation = document.createElement("p");
+  confirmation.append(document.createTextNode("訂單請求已送出，請透過 "));
+  const lineLink = document.createElement("a");
+  lineLink.href = "https://line.me/R/ti/p/@fortune-fruits";
+  lineLink.textContent = "LINE";
+  confirmation.append(lineLink);
+  confirmation.append(document.createTextNode(" 或 "));
+  const instagramLink = document.createElement("a");
+  instagramLink.href = "https://www.instagram.com/fortune.fruits.tw";
+  instagramLink.textContent = "Instagram";
+  confirmation.append(instagramLink);
+  confirmation.append(document.createTextNode(" 確認付款與交付細節；尚未代表付款或訂單已完成。"));
+
+  target.append(heading);
+  target.append(orderId);
+  target.append(list);
+  target.append(total);
+  target.append(confirmation);
 }
 
 function bindCheckoutForm() {
