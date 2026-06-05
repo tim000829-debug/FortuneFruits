@@ -37,6 +37,7 @@ function getInquiryPayload(formElement) {
   const data = new FormData(formElement);
 
   return {
+    type: "inquiry",
     name: String(data.get("name") || "").trim(),
     contact: String(data.get("contact") || "").trim(),
     eventDate: String(data.get("eventDate") || "").trim(),

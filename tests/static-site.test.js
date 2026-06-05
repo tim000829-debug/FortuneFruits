@@ -118,6 +118,7 @@ assert.ok(html.includes('href="products.html"'), "home page links to products");
   "showFieldError",
   "formStatus",
   "scrollIntoView",
+  'type: "inquiry"',
 ].forEach((hook) => {
   assert.ok(js.includes(hook), `JS contains ${hook}`);
 });
