@@ -114,7 +114,7 @@ assert.ok(html.includes('href="products.html"'), "home page links to products");
   "validateForm",
   "submitInquiry",
   "GOOGLE_SCRIPT_URL",
-  "https://script.google.com/macros/s/AKfycbz9JGXYGwrDCXr96WssJeCz4eK3mXPiXImWEld-bCjEjA20-EM5f_t3VZQcyY1VGTFu/exec",
+  "https://script.google.com/macros/s/AKfycby8wu2VvolNUnXRWp4JKhsdfwW24q6qGmpcQEn2J6cTBbASOaZt1Toi77DduiIA8hCr/exec",
   "showFieldError",
   "formStatus",
   "scrollIntoView",
