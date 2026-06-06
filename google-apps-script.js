@@ -1,7 +1,8 @@
 const SPREADSHEET_ID = "1ex-n0Q8lpdvSpP0EMfL_ONhhPl6WpehnSPyo8rfvvm8";
-const SHEET_NAME = "Inquiries";
+const INQUIRIES_SHEET_NAME = "Inquiries";
+const ORDERS_SHEET_NAME = "Orders";
 
-const HEADERS = [
+const INQUIRY_HEADERS = [
   "Timestamp",
   "Name",
   "Contact",
@@ -12,29 +13,24 @@ const HEADERS = [
   "Source",
 ];
 
+const ORDER_HEADERS = [
+  "Timestamp",
+  "Order ID",
+  "Customer Name",
+  "Phone",
+  "LINE ID",
+  "Pickup or Delivery Date",
+  "Address",
+  "Items",
+  "Total",
+  "Notes",
+  "Source",
+];
+
 function doPost(e) {
   try {
     const payload = parsePayload(e);
-    const sheet = getInquirySheet();
-
-    sheet.appendRow([
-      new Date(),
-      payload.name || "",
-      payload.contact || "",
-      payload.eventDate || "",
-      payload.quantity || "",
-      payload.occasion || "",
-      payload.notes || "",
-      payload.source || "",
-    ]);
-
-    return jsonResponse({
-      ok: true,
-      spreadsheetId: SPREADSHEET_ID,
-      spreadsheetUrl: SpreadsheetApp.openById(SPREADSHEET_ID).getUrl(),
-      sheetName: sheet.getName(),
-      lastRow: sheet.getLastRow(),
-    });
+    return routeRequest(payload);
   } catch (error) {
     return jsonResponse({ ok: false, error: error.message });
   }
@@ -45,11 +41,57 @@ function doGet() {
 
   return jsonResponse({
     ok: true,
-    message: "Fortune Fruits inquiry endpoint is ready.",
+    message: "Fortune Fruits endpoint is ready.",
     spreadsheetId: SPREADSHEET_ID,
     spreadsheetUrl: spreadsheet.getUrl(),
-    sheetName: SHEET_NAME,
+    sheets: [INQUIRIES_SHEET_NAME, ORDERS_SHEET_NAME],
   });
+}
+
+function routeRequest(payload) {
+  if (payload.type === "order") {
+    return appendOrder(payload);
+  }
+
+  return appendInquiry(payload);
+}
+
+function appendInquiry(payload) {
+  const sheet = getSheet(INQUIRIES_SHEET_NAME, INQUIRY_HEADERS);
+
+  sheet.appendRow([
+    new Date(),
+    payload.name || "",
+    payload.contact || "",
+    payload.eventDate || "",
+    payload.quantity || "",
+    payload.occasion || "",
+    payload.notes || "",
+    payload.source || "",
+  ]);
+
+  return successResponse("inquiry", sheet);
+}
+
+function appendOrder(payload) {
+  const sheet = getSheet(ORDERS_SHEET_NAME, ORDER_HEADERS);
+  const customer = payload.customer || {};
+
+  sheet.appendRow([
+    new Date(),
+    payload.orderId || "",
+    customer.customerName || "",
+    customer.phone || "",
+    customer.lineId || "",
+    customer.deliveryDate || "",
+    customer.address || "",
+    formatItems(payload.items || []),
+    payload.total || 0,
+    customer.orderNotes || "",
+    payload.source || "",
+  ]);
+
+  return successResponse("order", sheet);
 }
 
 function parsePayload(e) {
@@ -60,22 +102,44 @@ function parsePayload(e) {
   return JSON.parse(e.postData.contents);
 }
 
-function getInquirySheet() {
+function getSheet(sheetName, headers) {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.insertSheet(SHEET_NAME);
+  const sheet = spreadsheet.getSheetByName(sheetName) || spreadsheet.insertSheet(sheetName);
 
-  ensureHeaders(sheet);
+  ensureHeaders(sheet, headers);
   return sheet;
 }
 
-function ensureHeaders(sheet) {
-  const firstRow = sheet.getRange(1, 1, 1, HEADERS.length).getValues()[0];
-  const hasHeaders = HEADERS.every((header, index) => firstRow[index] === header);
+function ensureHeaders(sheet, headers) {
+  const firstRow = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+  const hasHeaders = headers.every((header, index) => firstRow[index] === header);
 
   if (!hasHeaders) {
-    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     sheet.setFrozenRows(1);
   }
+}
+
+function formatItems(items) {
+  return items
+    .map(function (item) {
+      const subtotal = Number(item.price || 0) * Number(item.quantity || 0);
+      return item.name + " x " + item.quantity + " = NT$ " + subtotal.toLocaleString("zh-TW");
+    })
+    .join("; ");
+}
+
+function successResponse(type, sheet) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  return jsonResponse({
+    ok: true,
+    type: type,
+    spreadsheetId: SPREADSHEET_ID,
+    spreadsheetUrl: spreadsheet.getUrl(),
+    sheetName: sheet.getName(),
+    lastRow: sheet.getLastRow(),
+  });
 }
 
 function jsonResponse(body) {

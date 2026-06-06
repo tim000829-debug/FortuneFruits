@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="果緣果物 Fortune Fruits 購物車結帳，送出訂單後請透過 LINE 或 Instagram 確認付款。"
+    />
+    <title>結帳 | 果緣果物 Fortune Fruits</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="commerce.js" defer></script>
+  </head>
+  <body class="shop-page" data-page="checkout">
+    <header class="site-header" aria-label="網站導覽">
+      <a class="brand-mark" href="index.html" aria-label="回首頁">
+        <span>果緣果物</span>
+        <small>Fortune Fruits</small>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">首頁</a>
+        <a href="products.html">商品</a>
+        <a href="checkout.html" aria-current="page">購物車<span class="cart-count" data-cart-count>0</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="shop-hero">
+        <p class="eyebrow">Checkout</p>
+        <h1>訂單確認</h1>
+        <p>確認購物車內容並留下聯絡資料，送出後請透過 LINE 或 Instagram 確認付款與交付細節。</p>
+      </section>
+
+      <section class="section checkout-section" aria-labelledby="checkout-title">
+        <div class="checkout-layout">
+          <div class="cart-panel">
+            <h2 id="checkout-title">購物車</h2>
+            <div class="cart-items" id="cartItems" data-cart-items></div>
+            <div class="empty-cart" data-empty-cart hidden>
+              <p>購物車目前是空的。</p>
+              <a class="primary-action" href="products.html">回商品頁選購</a>
+            </div>
+            <div class="cart-total-row">
+              <span>總計</span>
+              <strong id="cartTotal" data-cart-total>NT$ 0</strong>
+            </div>
+          </div>
+
+          <form class="checkout-form" novalidate data-checkout-form>
+            <h2>訂購資料</h2>
+            <label>
+              姓名
+              <input type="text" name="customerName" autocomplete="name" required />
+              <span class="field-error" data-error-for="customerName"></span>
+            </label>
+            <label>
+              電話
+              <input type="tel" name="phone" autocomplete="tel" required />
+              <span class="field-error" data-error-for="phone"></span>
+            </label>
+            <label>
+              LINE ID
+              <input type="text" name="lineId" required />
+              <span class="field-error" data-error-for="lineId"></span>
+            </label>
+            <label>
+              取貨/配送日期
+              <input type="date" name="deliveryDate" required />
+              <span class="field-error" data-error-for="deliveryDate"></span>
+            </label>
+            <label class="full">
+              地址
+              <input type="text" name="address" autocomplete="street-address" required />
+              <span class="field-error" data-error-for="address"></span>
+            </label>
+            <label class="full">
+              備註
+              <textarea name="orderNotes" rows="4" placeholder="可填寫送達時段、客製需求或其他注意事項"></textarea>
+            </label>
+            <button type="submit">送出訂單</button>
+            <p class="form-status" data-order-status role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div class="order-summary" id="orderSummary" data-order-summary hidden></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>果緣果物 Fortune Fruits</p>
+      <p>
+        <a href="https://line.me/R/ti/p/@fortune-fruits">LINE</a>
+        /
+        <a href="https://www.instagram.com/fortune.fruits.tw">Instagram</a>
+      </p>
+    </footer>
+  </body>
+</html>

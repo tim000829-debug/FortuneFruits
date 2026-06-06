@@ -403,10 +403,228 @@ h1 {
   margin: 0;
 }
 
+.shop-page {
+  background: var(--paper);
+}
+
+.shop-hero {
+  padding: calc(76px + clamp(64px, 8vw, 110px)) clamp(20px, 6vw, 86px) clamp(48px, 7vw, 86px);
+  background: linear-gradient(135deg, rgba(233, 241, 223, 0.92), rgba(255, 255, 255, 0.92));
+}
+
+.shop-hero h1 {
+  max-width: 780px;
+  margin-bottom: 20px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.8rem, 7vw, 6.5rem);
+  line-height: 0.98;
+  font-weight: 500;
+}
+
+.shop-hero p:not(.eyebrow) {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+
+.cart-count {
+  display: inline-flex;
+  min-width: 24px;
+  min-height: 24px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: var(--citrus);
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.product-section {
+  background: #fff;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.product-card {
+  display: grid;
+  grid-template-rows: minmax(260px, 22vw) 1fr;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.product-card-body {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.product-tag {
+  margin: 0;
+  color: var(--leaf);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.product-card h3 {
+  margin-bottom: 0;
+  color: var(--leaf-dark);
+  font-size: 1.35rem;
+}
+
+.product-card p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.product-price {
+  color: var(--berry);
+  font-size: 1.35rem;
+}
+
+.product-card label,
+.checkout-form label,
+.cart-line label {
+  display: grid;
+  gap: 8px;
+  color: var(--leaf-dark);
+  font-weight: 700;
+}
+
+.quantity-input,
+.cart-line input,
+.checkout-form input,
+.checkout-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  padding: 12px 14px;
+}
+
+.product-card button,
+.cart-line button,
+.checkout-form button {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--leaf-dark);
+  background: var(--leaf-dark);
+  color: #fff;
+  padding: 12px 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.cart-line button {
+  background: transparent;
+  color: var(--leaf-dark);
+}
+
+.shop-status {
+  min-height: 26px;
+  margin-top: 22px;
+  color: var(--leaf-dark);
+  font-weight: 800;
+}
+
+.checkout-section {
+  background: #fff;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: start;
+}
+
+.cart-panel,
+.checkout-form,
+.order-summary {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: clamp(22px, 4vw, 36px);
+}
+
+.cart-items {
+  display: grid;
+  gap: 14px;
+}
+
+.cart-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px minmax(110px, auto) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.cart-line h3,
+.cart-line p {
+  margin: 0;
+}
+
+.cart-line p {
+  color: var(--muted);
+}
+
+.empty-cart[hidden],
+.order-summary[hidden],
+.checkout-form[hidden] {
+  display: none;
+}
+
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--leaf-dark);
+  font-size: 1.2rem;
+}
+
+.checkout-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.checkout-form h2,
+.checkout-form .full,
+.checkout-form button,
+.checkout-form .form-status {
+  grid-column: 1 / -1;
+}
+
+.order-summary {
+  margin-top: 28px;
+}
+
+.order-summary ul {
+  padding-left: 20px;
+}
+
 @media (max-width: 980px) {
   .hero,
   .contact-section,
   .section-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .product-grid,
+  .checkout-layout {
     grid-template-columns: 1fr;
   }
 
@@ -442,6 +660,10 @@ h1 {
     padding-top: 0;
   }
 
+  .shop-hero {
+    padding-top: 54px;
+  }
+
   .hero-media {
     min-height: 48vh;
   }
@@ -449,8 +671,19 @@ h1 {
   .gallery-grid,
   .occasion-list,
   .process-list,
+  .product-grid,
+  .checkout-form,
+  .cart-line,
   .contact-form {
     grid-template-columns: 1fr;
+  }
+
+  .product-card {
+    grid-template-rows: auto 1fr;
+  }
+
+  .product-card img {
+    aspect-ratio: 4 / 3;
   }
 
   .gallery-item.large,
